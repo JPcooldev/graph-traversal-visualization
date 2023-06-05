@@ -31,10 +31,10 @@ class Grid:
             square.draw(surface)
         pygame.display.update()
 
-    def reset(self, color=True, start=True, end=True):
+    def reset(self, preserve_map=False):
         for row in self.grid:
             for square in row:
-                square.reset(color, start, end)
+                square.reset(preserve_map)
 
     def get_neighbours(self, square: Square):
         row, col = square.row, square.col
@@ -54,4 +54,12 @@ class Grid:
             neighbours.append(self.grid[row][col-1])
 
         return neighbours
+
+    def num_visited(self):
+        sum = 0
+        for row in self.grid:
+            for square in row:
+                if square.is_visited:
+                    sum += 1
+        return sum
 

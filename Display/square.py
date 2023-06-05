@@ -20,8 +20,10 @@ class Square(pygame.sprite.Sprite):
         # attributes for algorithms
         self.is_visited = False
         self.neighbours = []
+        # distance from the start
         self.distance = math.inf
-
+        # f cost for A* algorithm
+        self.f_cost = math.inf
 
         if self.is_edge:
             self.color = BLACK
@@ -37,7 +39,10 @@ class Square(pygame.sprite.Sprite):
             surface.blit(text, centre_text(text, self.rect))
         elif self.is_end:
             text = font.render("E", True, BLACK)
-            surface.blit(text, centre_text(text, self.rect))
+            surface.blit(text, surface.blit(text, centre_text(text, self.rect)))
+            #image = pygame.image.load("/Users/jp/Desktop/dev/python/graphics/graph-traversal/images/checkeredFlag.png")
+            #image = pygame.transform.scale(image, (self.rect[2], self.rect[3]))
+            #surface.blit(image, (self.rect[0], self.rect[1]))
 
     def clicked(self, surface: pygame.surface.Surface, start_point=False, end_point=False):
         if start_point:
@@ -47,28 +52,31 @@ class Square(pygame.sprite.Sprite):
             self.color = GRAY
             self.is_end = True
         else:
-            self.color = BLACK
-            self.is_wall = True
-
-    def reset(self, color=True, start=True, end=True):
-        if color:
-            if self.is_edge:
-                self.color = BLACK
+            if self.is_start or self.is_end:
+                return
             else:
-                self.color = WHITE
+                self.color = BLACK
+                self.is_wall = True
 
-        if start:
+    def reset(self, preserve_map=False):
+        if preserve_map:
+            if not (self.is_start or self.is_end or self.is_barrier()):
+                self.color = WHITE
+        else:
             self.is_start = False
-        if end:
             self.is_end = False
-        self.is_wall = False
+            self.is_wall = False
+            if not self.is_edge:
+                self.color = WHITE
         self.is_visited = False
         self.neighbours = []
         self.distance = math.inf
+        self.f_cost = math.inf
 
 
     def is_barrier(self):
         return self.is_edge or self.is_wall
 
-
+    def __lt__(self, other):
+        return self.f_cost < other.f_cost
 
