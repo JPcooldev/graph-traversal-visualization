@@ -1,11 +1,9 @@
-import pygame.surface
 from Display.grid import Grid
 from Display.square import Square
 from Global.global_variables import *
-import time
 
 
-def BFS(draw, grid: Grid, start: Square, end: Square):
+def bfs(draw, grid: Grid, start: Square, end: Square):
     queue = []
     queue.append(start)
 
@@ -23,10 +21,4 @@ def BFS(draw, grid: Grid, start: Square, end: Square):
                     queue.append(neighbour)
                     neighbour.color = GREEN
                     draw()
-
-
-def color_path(path: list, surface: pygame.surface.Surface):
-    for square in path:
-        square.color = RED
-        square.draw(surface)
-        time.sleep(0.5)
+    return True

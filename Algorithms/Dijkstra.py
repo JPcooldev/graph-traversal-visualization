@@ -6,7 +6,7 @@ import time
 import math
 
 
-def Dijkstra(draw, grid: Grid, start: Square, end: Square):
+def dijkstra(draw, grid: Grid, start: Square, end: Square, visualizing_path=False):
     """
     Traversing a graph using BFS while adding a previous node to each visited node.
     """
@@ -18,19 +18,8 @@ def Dijkstra(draw, grid: Grid, start: Square, end: Square):
         current = queue.pop(0)
         # we found an end
         if current == end:
-            path = []
-            node = end
-            # going back to the start based on the shortest distance from the start
-            while node != start:
-                shortest_path_node = None
-                min_dist = math.inf
-                for neighbour in node.neighbours:
-                    if neighbour.distance < min_dist:
-                        min_dist = neighbour.distance
-                        shortest_path_node = neighbour
-                path.append(node)
-                node = shortest_path_node
-            color_path(draw, path)
+            path = find_path(start, end)
+            color_path(draw, path, YELLOW)
             break
         # node has not been visited yet
         if not current.is_visited:
@@ -38,7 +27,12 @@ def Dijkstra(draw, grid: Grid, start: Square, end: Square):
             current.is_visited = True
             if current != start:
                 current.color = RED
-            draw()
+
+            # coloring path to the start
+            if visualizing_path:
+                path = find_path(start, current)
+                color_path(draw, path, YELLOW)
+
             # find a neighbours which has not been visited yet
             for neighbour in grid.get_neighbours(current):
                 if not neighbour.is_visited:
@@ -49,11 +43,30 @@ def Dijkstra(draw, grid: Grid, start: Square, end: Square):
                     # add distance (how many nodes it is from the start)
                     neighbour.distance = current.distance + 1
                     neighbour.color = GREEN
-                    draw()
 
+            # coloring path back
+            if visualizing_path:
+                color_path(draw, path, RED)
+            else:
+                draw()
+    return True
 
-def color_path(draw, path: list):
+def color_path(draw, path: list, color):
     for square in path:
-        square.color = YELLOW
+        square.color = color
         draw()
 
+
+def find_path(start, current):
+    path = []
+    # going back to the start based on the shortest distance from the start
+    while current != start:
+        shortest_path_node = None
+        min_dist = math.inf
+        for neighbour in current.neighbours:
+            if neighbour.distance < min_dist:
+                min_dist = neighbour.distance
+                shortest_path_node = neighbour
+        path.append(current)
+        current = shortest_path_node
+    return path

@@ -5,7 +5,7 @@ from Global.global_variables import *
 import time
 
 
-def DFS(draw, grid: Grid, start: Square, end: Square):
+def dfs(draw, grid: Grid, start: Square, end: Square):
     stack = []
     stack.append(start)
 
@@ -23,6 +23,7 @@ def DFS(draw, grid: Grid, start: Square, end: Square):
                     stack.append(neighbour)
                     neighbour.color = GREEN
                     draw()
+    return True
 
 
 def color_path(path: list, surface: pygame.surface.Surface):
